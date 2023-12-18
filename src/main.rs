@@ -104,8 +104,8 @@ async fn count(
         .fetch_one(&mut **db)
         .await
     {
-        Ok(record) => record.count.unwrap_or(0),
-        Err(..) => 0,
+        Ok(record) => record.count.unwrap_or(1),
+        Err(..) => 1,
     };
 
     let options = SvgGenerateOptions {
