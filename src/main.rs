@@ -100,15 +100,16 @@ async fn count(
         return response;
     }
 
-    let count = sqlx::query!("SELECT count FROM counts WHERE id = $1", id)
+    let count = match sqlx::query!("SELECT count FROM counts WHERE id = $1", id)
         .fetch_one(&mut **db)
         .await
-        .unwrap()
-        .count;
+    {
+        Ok(record) => record.count.unwrap_or(0),
+        Err(..) => 0,
+    };
 
-    println!("{:?}", count);
     let options = SvgGenerateOptions {
-        count: count.unwrap_or(0) as u64,
+        count: count as u64,
         theme: theme.unwrap_or("moebooru"),
         pixelated: pixelated.unwrap_or(false),
         length: length.unwrap_or(7),
