@@ -79,9 +79,9 @@ fn number(
 
     let options = SvgGenerateOptions {
         count: number,
-        theme: theme.unwrap_or("default"),
-        pixelated: pixelated.unwrap_or(false),
-        length: length.unwrap_or(0),
+        theme: theme.unwrap_or("moebooru"),
+        pixelated: pixelated.unwrap_or(true),
+        length: length.unwrap_or(7),
     };
 
     respond_svg(app_state, options)
@@ -111,7 +111,7 @@ async fn count(
     let options = SvgGenerateOptions {
         count: count as u64,
         theme: theme.unwrap_or("moebooru"),
-        pixelated: pixelated.unwrap_or(false),
+        pixelated: pixelated.unwrap_or(true),
         length: length.unwrap_or(7),
     };
 
