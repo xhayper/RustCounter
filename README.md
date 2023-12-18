@@ -49,7 +49,9 @@
 
 ```shell
 $ git clone https://github.com/xhayper/RustCounter.git
-$ cat database.sqlite
+$ echo 'DATABASE_URL="sqlite://database.sqlite"' >> .env
+$ sqlx database create
+$ sqlx migrate run
 $ cargo run --release
 ```
 

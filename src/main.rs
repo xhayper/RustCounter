@@ -158,5 +158,5 @@ async fn rocket() -> _ {
         .attach(sqlx_stage())
         .manage(AppState { theme_manager })
         .mount("/", FileServer::from(relative!("static")))
-        .mount("/", routes![count])
+        .mount("/", routes![count, number])
 }
