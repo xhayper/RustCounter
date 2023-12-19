@@ -32,7 +32,7 @@ enum CountResponse {
 fn respond_svg(app_state: &State<AppState>, options: SvgGenerateOptions) -> CountResponse {
     let svg = app_state.theme_manager.generate_svg(&options).unwrap();
 
-    CountResponse::Success(svg, Header::new("Cache-Control", "no-cache"))
+    CountResponse::Success(svg, Header::new("Cache-Control", "max-age=0, no-cache, no-store, must-revalidate"))
 }
 
 fn validate_svg_options(
