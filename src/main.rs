@@ -103,6 +103,21 @@ fn validate_svg_options(
     None
 }
 
+fn respond_with_dynamic_format(
+    app_state: &State<AppState>,
+    format: &str,
+    options: SvgGenerateOptions,
+    cache: bool,
+) -> CountResponse {
+    if format == "png" {
+        respond_png(app_state, options, cache)
+    } else if format == "svg" {
+        respond_svg(app_state, options, cache)
+    } else {
+        CountResponse::Failed("invalid format".to_string())
+    }
+}
+
 #[get("/number/<number>?<theme>&<pixelated>&<length>&<format>")]
 fn number(
     app_state: &State<AppState>,
@@ -124,11 +139,7 @@ fn number(
         length: length.unwrap_or(7),
     };
 
-    if format.is_some() && format.unwrap() == "png" {
-        return respond_png(app_state, options, true);
-    }
-
-    respond_svg(app_state, options, true)
+    respond_with_dynamic_format(app_state, format.unwrap_or("svg"), options, true)
 }
 
 #[get("/count/<id>?<theme>&<pixelated>&<length>&<format>")]
@@ -171,11 +182,7 @@ async fn count(
     .await
     .ok();
 
-    if format.is_some() && format.unwrap() == "png" {
-        return respond_png(app_state, options, false);
-    }
-
-    respond_svg(app_state, options, false)
+    respond_with_dynamic_format(app_state, format.unwrap_or("svg"), options, true)
 }
 
 async fn run_migrations(rocket: Rocket<Build>) -> fairing::Result {
