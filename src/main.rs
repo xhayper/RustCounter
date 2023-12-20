@@ -57,7 +57,12 @@ fn respond_png(
     options: SvgGenerateOptions,
     cache: bool,
 ) -> CountResponse {
-    let svg = app_state.theme_manager.generate_svg(&options).unwrap();
+    let svg = app_state
+        .theme_manager
+        .generate_svg(&options)
+        .unwrap()
+        .replace(" style='image-rendering: pixelated;'", "");
+
     let png = utility::svg_to_png(svg.as_bytes(), options.pixelated);
 
     CountResponse::PngSuccess(
@@ -83,7 +88,7 @@ fn validate_svg_options(
         return Some(CountResponse::Failed("id too long".to_string()));
     };
 
-    if id.len() <= 0 {
+    if id.is_empty() {
         return Some(CountResponse::Failed("id too short".to_string()));
     };
 
@@ -93,10 +98,6 @@ fn validate_svg_options(
 
     if length.is_some() && length.unwrap() > 12 {
         return Some(CountResponse::Failed("length too long".to_string()));
-    };
-
-    if length.is_some() && length.unwrap() <= 0 {
-        return Some(CountResponse::Failed("length too short".to_string()));
     };
 
     None

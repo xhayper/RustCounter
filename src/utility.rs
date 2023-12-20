@@ -14,11 +14,13 @@ pub fn file_to_base64(data: &[u8]) -> String {
 }
 
 pub fn svg_to_png(data: &[u8], pixelated: bool) -> Vec<u8> {
-    let mut opt = usvg::Options::default();
-    opt.image_rendering = if pixelated {
-        usvg::ImageRendering::OptimizeSpeed
-    } else {
-        usvg::ImageRendering::OptimizeQuality
+    let opt = usvg::Options {
+        image_rendering: if pixelated {
+            usvg::ImageRendering::OptimizeSpeed
+        } else {
+            usvg::ImageRendering::OptimizeQuality
+        },
+        ..Default::default()
     };
 
     let usvg_tree = usvg::Tree::from_data(data, &opt).unwrap();

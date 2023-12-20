@@ -110,14 +110,12 @@ impl ThemeManager<'_> {
     }
 
     pub fn generate_svg(&self, options: &SvgGenerateOptions) -> Option<String> {
-        if self.themes.len() == 0 {
+        if self.themes.is_empty() {
             return None;
         };
 
         let theme = self.themes.get(options.theme);
-        if theme.is_none() {
-            return None;
-        };
+        theme?;
 
         let mut width = 0;
         let mut height = 0;
@@ -137,9 +135,7 @@ impl ThemeManager<'_> {
             let num = num.to_digit(10).unwrap() as u8;
             let image_data = theme.unwrap().get(&num);
 
-            if image_data.is_none() {
-                return None;
-            };
+            image_data?;
 
             let image_data = image_data.unwrap();
             let image_width = image_data.width;
