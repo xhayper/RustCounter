@@ -32,19 +32,31 @@ enum CountResponse {
     Failed(String),
 }
 
-fn respond_svg(app_state: &State<AppState>, options: SvgGenerateOptions) -> CountResponse {
+fn respond_svg(
+    app_state: &State<AppState>,
+    options: SvgGenerateOptions,
+    cache: bool,
+) -> CountResponse {
     let svg = app_state.theme_manager.generate_svg(&options).unwrap();
 
     CountResponse::SvgSuccess(
         svg,
         Header::new(
             "Cache-Control",
-            "max-age=0, no-cache, no-store, must-revalidate",
+            if cache {
+                "max-age=31536000, public"
+            } else {
+                "max-age=0, no-cache, no-store, must-revalidate"
+            },
         ),
     )
 }
 
-fn respond_png(app_state: &State<AppState>, options: SvgGenerateOptions) -> CountResponse {
+fn respond_png(
+    app_state: &State<AppState>,
+    options: SvgGenerateOptions,
+    cache: bool,
+) -> CountResponse {
     let svg = app_state.theme_manager.generate_svg(&options).unwrap();
     let png = utility::svg_to_png(svg.as_bytes(), options.pixelated);
 
@@ -52,7 +64,11 @@ fn respond_png(app_state: &State<AppState>, options: SvgGenerateOptions) -> Coun
         png,
         Header::new(
             "Cache-Control",
-            "max-age=0, no-cache, no-store, must-revalidate",
+            if cache {
+                "max-age=31536000, public"
+            } else {
+                "max-age=0, no-cache, no-store, must-revalidate"
+            },
         ),
     )
 }
@@ -108,10 +124,10 @@ fn number(
     };
 
     if format.is_some() && format.unwrap() == "png" {
-        return respond_png(app_state, options);
+        return respond_png(app_state, options, true);
     }
 
-    respond_svg(app_state, options)
+    respond_svg(app_state, options, true)
 }
 
 #[get("/count/<id>?<theme>&<pixelated>&<length>&<format>")]
@@ -155,10 +171,10 @@ async fn count(
     .ok();
 
     if format.is_some() && format.unwrap() == "png" {
-        return respond_png(app_state, options);
+        return respond_png(app_state, options, false);
     }
 
-    respond_svg(app_state, options)
+    respond_svg(app_state, options, false)
 }
 
 async fn run_migrations(rocket: Rocket<Build>) -> fairing::Result {
