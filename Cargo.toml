@@ -12,6 +12,7 @@ base64 = "0.21.5"
 png = "0.17.10"
 tree_magic = "0.2.3"
 sqlx = "0.7.3"
+resvg = "0.37.0"
 
 [dependencies.rocket_db_pools]
 version = "0.1.0"

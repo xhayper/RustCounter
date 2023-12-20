@@ -50,8 +50,8 @@
 ```shell
 $ git clone https://github.com/xhayper/RustCounter.git
 $ echo 'DATABASE_URL="sqlite://database.sqlite"' >> .env
-$ sqlx database create
-$ sqlx migrate run
+$ cargo sqlx database create
+$ cargo sqlx migrate run
 $ cargo run --release
 ```
 
@@ -70,6 +70,7 @@ url = "database.sqlite"
 - `theme` - theme you gonna use (default: moebooru)
 - `length` - amount of number to show, will automatically expand  if the number is larger than what was set (default: 7)
 - `pixelated` - should the svg be rendered with pixelated style? (default: true)
+- `format` - choose between `png` and `svg` format (default: svg)
 
 ## Credits
 

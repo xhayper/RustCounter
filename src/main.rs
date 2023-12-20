@@ -1,4 +1,5 @@
 mod manager;
+mod utility;
 
 #[macro_use]
 extern crate rocket;
@@ -24,7 +25,9 @@ struct AppState {
 #[derive(Responder)]
 enum CountResponse {
     #[response(status = 200, content_type = "image/svg+xml")]
-    Success(String, Header<'static>),
+    SvgSuccess(String, Header<'static>),
+    #[response(status = 200, content_type = "image/png")]
+    PngSuccess(Vec<u8>, Header<'static>),
     #[response(status = 400, content_type = "plain")]
     Failed(String),
 }
@@ -32,7 +35,26 @@ enum CountResponse {
 fn respond_svg(app_state: &State<AppState>, options: SvgGenerateOptions) -> CountResponse {
     let svg = app_state.theme_manager.generate_svg(&options).unwrap();
 
-    CountResponse::Success(svg, Header::new("Cache-Control", "max-age=0, no-cache, no-store, must-revalidate"))
+    CountResponse::SvgSuccess(
+        svg,
+        Header::new(
+            "Cache-Control",
+            "max-age=0, no-cache, no-store, must-revalidate",
+        ),
+    )
+}
+
+fn respond_png(app_state: &State<AppState>, options: SvgGenerateOptions) -> CountResponse {
+    let svg = app_state.theme_manager.generate_svg(&options).unwrap();
+    let png = utility::svg_to_png(svg.as_bytes(), options.pixelated);
+
+    CountResponse::PngSuccess(
+        png,
+        Header::new(
+            "Cache-Control",
+            "max-age=0, no-cache, no-store, must-revalidate",
+        ),
+    )
 }
 
 fn validate_svg_options(
@@ -64,13 +86,14 @@ fn validate_svg_options(
     None
 }
 
-#[get("/number/<number>?<theme>&<pixelated>&<length>")]
+#[get("/number/<number>?<theme>&<pixelated>&<length>&<format>")]
 fn number(
     app_state: &State<AppState>,
     number: u64,
     theme: Option<&str>,
     pixelated: Option<bool>,
     length: Option<u8>,
+    format: Option<&str>,
 ) -> CountResponse {
     // too lazy lmao
     if let Some(response) = validate_svg_options(app_state, "placeholder", theme, length) {
@@ -84,10 +107,14 @@ fn number(
         length: length.unwrap_or(7),
     };
 
+    if format.is_some() && format.unwrap() == "png" {
+        return respond_png(app_state, options);
+    }
+
     respond_svg(app_state, options)
 }
 
-#[get("/count/<id>?<theme>&<pixelated>&<length>")]
+#[get("/count/<id>?<theme>&<pixelated>&<length>&<format>")]
 async fn count(
     mut db: Connection<Counts>,
     app_state: &State<AppState>,
@@ -95,6 +122,7 @@ async fn count(
     theme: Option<&str>,
     pixelated: Option<bool>,
     length: Option<u8>,
+    format: Option<&str>,
 ) -> CountResponse {
     if let Some(response) = validate_svg_options(app_state, id, theme, length) {
         return response;
@@ -125,6 +153,10 @@ async fn count(
     .execute(&mut **db)
     .await
     .ok();
+
+    if format.is_some() && format.unwrap() == "png" {
+        return respond_png(app_state, options);
+    }
 
     respond_svg(app_state, options)
 }

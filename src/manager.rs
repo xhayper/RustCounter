@@ -1,4 +1,4 @@
-use base64::{engine::general_purpose, Engine};
+use crate::utility;
 use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
@@ -21,19 +21,6 @@ pub struct SvgGenerateOptions<'a> {
 
 pub struct ThemeManager<'a> {
     pub themes: HashMap<String, HashMap<u8, ThemeImageData<'a>>>,
-}
-
-fn encode_file(file: &mut File) -> Option<String> {
-    let mut data = vec![];
-    file.read_to_end(&mut data).ok();
-
-    let mime = tree_magic::from_u8(&data);
-
-    Some(format!(
-        "data:{};charset=utf-8;base64,{}",
-        mime,
-        general_purpose::STANDARD.encode(data)
-    ))
 }
 
 impl ThemeManager<'_> {
@@ -80,7 +67,13 @@ impl ThemeManager<'_> {
                     continue;
                 };
 
-                let encoded_data = encode_file(&mut File::open(&image_path).unwrap()).unwrap();
+                let mut image_data = vec![];
+                File::open(&image_path)
+                    .unwrap()
+                    .read_to_end(&mut image_data)
+                    .expect("TODO: panic message");
+
+                let encoded_data = utility::file_to_base64(&image_data);
 
                 let mut image_data = ThemeImageData {
                     width: 0,

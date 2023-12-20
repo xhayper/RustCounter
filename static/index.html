@@ -14,10 +14,17 @@
     <meta property="og:site_name" content="Rust Counter" />
     <meta property="og:description" content="多种风格可选的萌萌计数器" />
 
+    <meta property="og:image" content="https://pi.hayper.xyz/rust-counter/count/index?theme=e621&format=png" />
+    <meta property="og:image:secure_url" content="https://pi.hayper.xyz/rust-counter/count/index?theme=e621&format=png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="Rust Count!" />
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:creator" content="@hayper1919" />
     <meta name="twitter:title" content="Rust Counter!">
     <meta name="twitter:description" content="多种风格可选的萌萌计数器">
+    <meta name="twitter:image" content="https://pi.hayper.xyz/rust-counter/count/index?theme=e621&format=png">
+    <meta name="twitter:image:alt" content="Rust Count!">
 
     <link rel="preconnect" href="//www.googletagmanager.com/" crossorigin />
     <link rel="dns-prefetch" href="//www.googletagmanager.com/" />
@@ -85,15 +92,15 @@
     </p1>
 
     <h5>asoul</h5>
-    <object type="image/svg+xml" data="/rust-counter/number/1234567890?theme=asoul&format=png" alt="A-SOUL"></object>
+    <object type="image/png" data="/rust-counter/number/1234567890?theme=asoul&format=png" alt="A-SOUL"></object>
     <h5>moebooru</h5>
-    <object type="image/svg+xml" data="/rust-counter/number/1234567890?theme=moebooru&format=png" alt="Moebooru"></object>
+    <object type="image/png" data="/rust-counter/number/1234567890?theme=moebooru&format=png" alt="Moebooru"></object>
     <h5>rule34</h5>
     <object type="image/svg+xml" data="/rust-counter/number/1234567890?theme=rule34" alt="Rule34"></object>
     <h5>gelbooru</h5>
-    <object type="image/svg+xml" data="/rust-counter/number/1234567890?theme=gelbooru&format=png" alt="Gelbooru"></object>
+    <object type="image/png" data="/rust-counter/number/1234567890?theme=gelbooru&format=png" alt="Gelbooru"></object>
     <h5>e621</h5>
-    <object type="image/svg+xml" data="/rust-counter/number/1234567890?theme=e621&format=png" alt="e621"></object>
+    <object type="image/png" data="/rust-counter/number/1234567890?theme=e621&format=png" alt="e621"></object>
 
     <details>
         <summary>
@@ -158,6 +165,11 @@
         <option value="true">true</option>
         <option value="false">false</option>
     </select>
+    <code>&format=</code>
+    <select id="format" style="display: inline-block; height: 1.6em; line-height: 1.6em; font-size: 14px; margin: 0 4px; padding: 0 4px; vertical-align: middle;">
+        <option value="svg">svg</option>
+        <option value="png">png</option>
+    </select>
     <button id="get" style="margin: 10px 0;" onclick="_evt_push('click', 'normal', 'get_counter')">Get</button>
     <object type="image/svg+xml" id="result" style="display: block;"></object>
 </div>
@@ -176,18 +188,21 @@
     btn.addEventListener("click", () => {
         const nameEl = document.getElementById("name"),
             themeEl = document.getElementById("theme"),
-            pixelatedEl = document.getElementById("pixelated");
+            pixelatedEl = document.getElementById("pixelated"),
+            formatEl = document.getElementById("format");
 
         const name = nameEl.value?.trim() ?? "";
         const theme = themeEl.value;
         const pixelated = pixelatedEl.value;
+        const format = formatEl.value;
 
         if (name === "") {
             alert("Please input counter name.");
             return;
         }
 
-        object.setAttribute("data", encodeURI(`/rust-counter/count/${name}?theme=${theme}&pixelated=${pixelated}`));
+        object.setAttribute("type", `image/${format === "png" ? "png" : "svg+xml"}`);
+        object.setAttribute("data", encodeURI(`https://pi.hayper.xyz/rust-count/count/${name}?theme=${theme}&pixelated=${pixelated}&format=${format}`));
     });
 </script>
 </body>
