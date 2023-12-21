@@ -77,13 +77,13 @@ impl ThemeManager<'_> {
 
                 let file = File::open(&image_path);
                 if file.is_err() {
-                    eprintln!("Failed to open {}", image_path.display());
+                    eprintln!("Failed to open file {}", image_path.display());
                     continue;
                 }
 
                 let mut file = file.unwrap();
                 if file.read_to_end(&mut image_data).is_err() {
-                    eprintln!("Failed to read {}", image_path.display());
+                    eprintln!("Failed to read file {}", image_path.display());
                     continue;
                 }
 
@@ -100,22 +100,22 @@ impl ThemeManager<'_> {
                     let mut options = gif::DecodeOptions::new();
                     options.set_color_output(gif::ColorOutput::RGBA);
 
-                    let decoder = options.read_info(file);
+                    let decoder = options.read_info(File::open(image_path.clone()).unwrap());
                     if decoder.is_err() {
-                        eprintln!("Failed to decode {}", image_path.display());
+                        eprintln!("{} | Failed to decode {}", theme_name, image_path.display());
                         continue;
                     }
 
                     let mut decoder = decoder.unwrap();
                     let first_frame = decoder.read_next_frame();
                     if first_frame.is_err() {
-                        eprintln!("Failed to decode {}", image_path.display());
+                        eprintln!("{} | Failed to decode {}", theme_name, image_path.display());
                         continue;
                     }
 
                     let first_frame = first_frame.unwrap();
                     if first_frame.is_none() {
-                        eprintln!("{} has no frames", image_path.display());
+                        eprintln!("{} | {} has no frames", theme_name, image_path.display());
                         continue;
                     }
 
@@ -123,10 +123,10 @@ impl ThemeManager<'_> {
                     image_data.width = first_frame.width as u64;
                     image_data.height = first_frame.height as u64;
                 } else {
-                    let decoder = png::Decoder::new(file);
+                    let decoder = png::Decoder::new(File::open(image_path.clone()).unwrap());
                     let reader = decoder.read_info();
                     if reader.is_err() {
-                        eprintln!("can't read png file {}", image_path.display());
+                        eprintln!("{} | Can't read {}", theme_name, image_path.display());
                         continue;
                     }
 
