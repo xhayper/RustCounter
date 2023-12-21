@@ -30,9 +30,7 @@ pub fn svg_to_png(data: &[u8], pixelated: bool) -> Option<Vec<u8>> {
     };
 
     let pixmap_size = usvg_tree.size.to_int_size();
-
     let resvg_tree = resvg::Tree::from_usvg(&usvg_tree);
-
     let mut pixmap = match tiny_skia::Pixmap::new(pixmap_size.width(), pixmap_size.height()) {
         Some(pixmap) => pixmap,
         None => return None,
@@ -41,7 +39,6 @@ pub fn svg_to_png(data: &[u8], pixelated: bool) -> Option<Vec<u8>> {
     resvg_tree.render(tiny_skia::Transform::default(), &mut pixmap.as_mut());
 
     let result = pixmap.encode_png();
-
     if result.is_err() {
         eprintln!("Failed to encode PNG: {:?}", result.err());
         return None;

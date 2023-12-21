@@ -108,7 +108,6 @@ impl ThemeManager<'_> {
 
                     let mut decoder = decoder.unwrap();
                     let first_frame = decoder.read_next_frame();
-
                     if first_frame.is_err() {
                         eprintln!("Failed to decode {}", image_path.display());
                         continue;
@@ -126,7 +125,6 @@ impl ThemeManager<'_> {
                 } else {
                     let decoder = png::Decoder::new(file);
                     let reader = decoder.read_info();
-
                     if reader.is_err() {
                         eprintln!("can't read png file {}", image_path.display());
                         continue;
