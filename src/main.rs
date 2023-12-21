@@ -5,6 +5,7 @@ mod utility;
 extern crate rocket;
 
 use crate::manager::{SvgGenerateOptions, ThemeManager};
+use dotenv::dotenv;
 use rocket::fairing::AdHoc;
 use rocket::fs::{relative, FileServer};
 use rocket::http::Header;
@@ -12,10 +13,9 @@ use rocket::State;
 use rocket::{fairing, Build, Responder, Rocket};
 use rocket_db_pools::sqlx::{self};
 use rocket_db_pools::{Connection, Database};
-use sqlx::SqlitePool;
-use rocket_dyn_templates::Template;
 use rocket_dyn_templates::context;
-use dotenv::dotenv;
+use rocket_dyn_templates::Template;
+use sqlx::SqlitePool;
 
 #[derive(Database)]
 #[database("sqlite_counts")]
@@ -85,11 +85,11 @@ fn respond_png(
     CountResponse::PngSuccess(
         png,
         Header::new(
-            if !cache { "Cache-Control" } else { "a" },
-            if !cache {
-                "max-age=0, no-cache, no-store, must-revalidate"
+            "Cache-Control",
+            if cache {
+                "max-age=31536000, public"
             } else {
-                "a"
+                "max-age=0, no-cache, no-store, must-revalidate"
             },
         ),
     )
@@ -208,9 +208,12 @@ async fn count(
 
 #[get("/")]
 fn index() -> Template {
-    Template::render("index", context! {
-        base_url: std::env::var("BASE_URL").unwrap_or("http://127.0.0.1:8000/".to_string())
-    })
+    Template::render(
+        "index",
+        context! {
+            base_url: std::env::var("BASE_URL").unwrap_or("http://127.0.0.1:8000/".to_string())
+        },
+    )
 }
 
 async fn run_migrations(rocket: Rocket<Build>) -> fairing::Result {
