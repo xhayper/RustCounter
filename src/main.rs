@@ -47,11 +47,11 @@ fn respond_svg(
     CountResponse::SvgSuccess(
         svg,
         Header::new(
-            if !cache { "Cache-Control" } else { "" },
+            if !cache { "Cache-Control" } else { "a" },
             if !cache {
                 "max-age=0, no-cache, no-store, must-revalidate"
             } else {
-                ""
+                "a"
             },
         ),
     )
@@ -82,11 +82,11 @@ fn respond_png(
     CountResponse::PngSuccess(
         png,
         Header::new(
-            if !cache { "Cache-Control" } else { "" },
+            if !cache { "Cache-Control" } else { "a" },
             if !cache {
                 "max-age=0, no-cache, no-store, must-revalidate"
             } else {
-                ""
+                "a"
             },
         ),
     )
