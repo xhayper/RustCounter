@@ -6,12 +6,14 @@ use std::io::Read;
 use std::ops::Add;
 use std::path::Path;
 
+#[derive(Debug, Clone, Copy)]
 pub struct ThemeImageData<'a> {
     pub width: u64,
     pub height: u64,
     pub data: &'a str,
 }
 
+#[derive(Debug, Clone, Copy)]
 pub struct SvgGenerateOptions<'a> {
     pub count: u64,
     pub theme: &'a str,
@@ -19,6 +21,7 @@ pub struct SvgGenerateOptions<'a> {
     pub length: u8,
 }
 
+#[derive(Debug)]
 pub struct ThemeManager<'a> {
     pub themes: HashMap<String, HashMap<u8, ThemeImageData<'a>>>,
 }
@@ -36,7 +39,6 @@ impl ThemeManager<'_> {
         };
 
         let read_result = fs::read_dir(Path::new("./static/assets/theme"));
-
         if read_result.is_err() {
             return;
         };
@@ -44,6 +46,10 @@ impl ThemeManager<'_> {
         let read_result = read_result.unwrap();
 
         for entry in read_result {
+            if entry.is_err() {
+                continue;
+            };
+
             let entry = entry.unwrap();
 
             if !entry.file_type().unwrap().is_dir() {
@@ -68,17 +74,25 @@ impl ThemeManager<'_> {
                 };
 
                 let mut image_data = vec![];
-                File::open(&image_path)
-                    .unwrap()
-                    .read_to_end(&mut image_data)
-                    .expect("TODO: panic message");
+
+                let file = File::open(&image_path);
+                if file.is_err() {
+                    eprintln!("Failed to open {}", image_path.display());
+                    continue;
+                }
+
+                let mut file = file.unwrap();
+                if file.read_to_end(&mut image_data).is_err() {
+                    eprintln!("Failed to read {}", image_path.display());
+                    continue;
+                }
 
                 let encoded_data = utility::file_to_base64(&image_data);
 
                 let mut image_data = ThemeImageData {
                     width: 0,
                     height: 0,
-                    // TODO: Handle error
+                    // How do we resolve this??
                     data: encoded_data.leak(),
                 };
 
@@ -86,21 +100,45 @@ impl ThemeManager<'_> {
                     let mut options = gif::DecodeOptions::new();
                     options.set_color_output(gif::ColorOutput::RGBA);
 
-                    // TODO: Maybe we should also handle error here?
-                    let mut decoder = options.read_info(File::open(image_path).unwrap()).unwrap();
-                    let first_frame = decoder.read_next_frame().unwrap().unwrap();
+                    let decoder = options.read_info(file);
+                    if decoder.is_err() {
+                        eprintln!("Failed to decode {}", image_path.display());
+                        continue;
+                    }
 
+                    let mut decoder = decoder.unwrap();
+                    let first_frame = decoder.read_next_frame();
+
+                    if first_frame.is_err() {
+                        eprintln!("Failed to decode {}", image_path.display());
+                        continue;
+                    }
+
+                    let first_frame = first_frame.unwrap();
+                    if first_frame.is_none() {
+                        eprintln!("{} has no frames", image_path.display());
+                        continue;
+                    }
+
+                    let first_frame = first_frame.unwrap();
                     image_data.width = first_frame.width as u64;
                     image_data.height = first_frame.height as u64;
                 } else {
-                    let decoder = png::Decoder::new(File::open(image_path).unwrap());
-                    // TODO: Maybe we should also handle error here?
-                    let reader = decoder.read_info().unwrap();
+                    let decoder = png::Decoder::new(file);
+                    let reader = decoder.read_info();
+
+                    if reader.is_err() {
+                        eprintln!("can't read png file {}", image_path.display());
+                        continue;
+                    }
+
+                    let reader = reader.unwrap();
                     let info = reader.info();
                     image_data.width = info.width as u64;
                     image_data.height = info.height as u64;
                 }
 
+                // This will never be None
                 self.themes
                     .get_mut(&theme_name)
                     .unwrap()
@@ -109,6 +147,7 @@ impl ThemeManager<'_> {
         }
     }
 
+    // TODO: Throw error instead of using Options by using Result<>
     pub fn generate_svg(&self, options: &SvgGenerateOptions) -> Option<String> {
         if self.themes.is_empty() {
             return None;
@@ -116,6 +155,8 @@ impl ThemeManager<'_> {
 
         let theme = self.themes.get(options.theme);
         theme?;
+
+        let theme = theme.unwrap();
 
         let mut width = 0;
         let mut height = 0;
@@ -132,9 +173,8 @@ impl ThemeManager<'_> {
         padded = padded.add(&options.count.to_string());
 
         for num in padded.chars() {
-            let num = num.to_digit(10).unwrap() as u8;
-            let image_data = theme.unwrap().get(&num);
-
+            let num = num.to_digit(10).unwrap_or(0) as u8;
+            let image_data = theme.get(&num);
             image_data?;
 
             let image_data = image_data.unwrap();

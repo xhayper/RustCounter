@@ -13,7 +13,8 @@ pub fn file_to_base64(data: &[u8]) -> String {
     )
 }
 
-pub fn svg_to_png(data: &[u8], pixelated: bool) -> Vec<u8> {
+// TODO: Throw error instead of using Options by using Result<>
+pub fn svg_to_png(data: &[u8], pixelated: bool) -> Option<Vec<u8>> {
     let opt = usvg::Options {
         image_rendering: if pixelated {
             usvg::ImageRendering::OptimizeSpeed
@@ -23,13 +24,28 @@ pub fn svg_to_png(data: &[u8], pixelated: bool) -> Vec<u8> {
         ..Default::default()
     };
 
-    let usvg_tree = usvg::Tree::from_data(data, &opt).unwrap();
+    let usvg_tree = match usvg::Tree::from_data(data, &opt) {
+        Ok(tree) => tree,
+        Err(_) => return None,
+    };
+
     let pixmap_size = usvg_tree.size.to_int_size();
 
     let resvg_tree = resvg::Tree::from_usvg(&usvg_tree);
 
-    let mut pixmap = tiny_skia::Pixmap::new(pixmap_size.width(), pixmap_size.height()).unwrap();
+    let mut pixmap = match tiny_skia::Pixmap::new(pixmap_size.width(), pixmap_size.height()) {
+        Some(pixmap) => pixmap,
+        None => return None,
+    };
+
     resvg_tree.render(tiny_skia::Transform::default(), &mut pixmap.as_mut());
 
-    pixmap.encode_png().unwrap()
+    let result = pixmap.encode_png();
+
+    if result.is_err() {
+        eprintln!("Failed to encode PNG: {:?}", result.err());
+        return None;
+    };
+
+    Some(result.unwrap())
 }

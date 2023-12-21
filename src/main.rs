@@ -37,16 +37,21 @@ fn respond_svg(
     options: SvgGenerateOptions,
     cache: bool,
 ) -> CountResponse {
-    let svg = app_state.theme_manager.generate_svg(&options).unwrap();
+    let svg = app_state.theme_manager.generate_svg(&options);
 
+    if svg.is_none() {
+        return CountResponse::Failed("failed to generate png".to_string());
+    }
+
+    let svg = svg.unwrap();
     CountResponse::SvgSuccess(
         svg,
         Header::new(
-            "Cache-Control",
-            if cache {
-                "max-age=31536000, public"
-            } else {
+            if !cache { "Cache-Control" } else { "" },
+            if !cache {
                 "max-age=0, no-cache, no-store, must-revalidate"
+            } else {
+                ""
             },
         ),
     )
@@ -57,32 +62,42 @@ fn respond_png(
     options: SvgGenerateOptions,
     cache: bool,
 ) -> CountResponse {
-    let svg = app_state
-        .theme_manager
-        .generate_svg(&options)
+    let svg = app_state.theme_manager.generate_svg(&options);
+
+    if svg.is_none() {
+        return CountResponse::Failed("failed to generate png".to_string());
+    }
+
+    let svg = svg
         .unwrap()
         .replace(" style='image-rendering: pixelated;'", "");
 
     let png = utility::svg_to_png(svg.as_bytes(), options.pixelated);
 
+    if png.is_none() {
+        return CountResponse::Failed("failed to generate png".to_string());
+    }
+
+    let png = png.unwrap();
     CountResponse::PngSuccess(
         png,
         Header::new(
-            "Cache-Control",
-            if cache {
-                "max-age=31536000, public"
-            } else {
+            if !cache { "Cache-Control" } else { "" },
+            if !cache {
                 "max-age=0, no-cache, no-store, must-revalidate"
+            } else {
+                ""
             },
         ),
     )
 }
 
-fn validate_svg_options(
+fn validate_options(
     app_state: &State<AppState>,
     id: &str,
     theme: Option<&str>,
     length: Option<u8>,
+    format: Option<&str>,
 ) -> Option<CountResponse> {
     if id.len() > 256 {
         return Some(CountResponse::Failed("id too long".to_string()));
@@ -98,6 +113,10 @@ fn validate_svg_options(
 
     if length.is_some() && length.unwrap() > 12 {
         return Some(CountResponse::Failed("length too long".to_string()));
+    };
+
+    if format.is_some() && format.unwrap() != "svg" && format.unwrap() != "png" {
+        return Some(CountResponse::Failed("invalid format".to_string()));
     };
 
     None
@@ -127,8 +146,7 @@ fn number(
     length: Option<u8>,
     format: Option<&str>,
 ) -> CountResponse {
-    // too lazy lmao
-    if let Some(response) = validate_svg_options(app_state, "placeholder", theme, length) {
+    if let Some(response) = validate_options(app_state, "placeholder", theme, length, format) {
         return response;
     }
 
@@ -152,7 +170,7 @@ async fn count(
     length: Option<u8>,
     format: Option<&str>,
 ) -> CountResponse {
-    if let Some(response) = validate_svg_options(app_state, id, theme, length) {
+    if let Some(response) = validate_options(app_state, id, theme, length, format) {
         return response;
     }
 
@@ -160,7 +178,7 @@ async fn count(
         .fetch_one(&mut **db)
         .await
     {
-        Ok(record) => record.count.unwrap_or(1),
+        Ok(record) => record.count.unwrap_or(0) + 1,
         Err(..) => 1,
     };
 
@@ -171,7 +189,7 @@ async fn count(
         length: length.unwrap_or(7),
     };
 
-    let new_count = (options.count + 1) as i64;
+    let new_count = options.count as i64;
 
     sqlx::query!(
         "INSERT INTO counts (id, count) VALUES ($1, $2) ON CONFLICT(id) DO UPDATE SET count = $2",
