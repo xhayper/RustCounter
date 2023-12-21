@@ -13,6 +13,9 @@ use rocket::{fairing, Build, Responder, Rocket};
 use rocket_db_pools::sqlx::{self};
 use rocket_db_pools::{Connection, Database};
 use sqlx::SqlitePool;
+use rocket_dyn_templates::Template;
+use rocket_dyn_templates::context;
+use dotenv::dotenv;
 
 #[derive(Database)]
 #[database("sqlite_counts")]
@@ -203,6 +206,14 @@ async fn count(
     respond_with_dynamic_format(app_state, format.unwrap_or("svg"), options, false)
 }
 
+#[get("/")]
+fn index() -> Template {
+    Template::render("index", context! {
+        base_url: std::env::var("BASE_URL").unwrap_or("http://127.0.0.1:8000/".to_string()),
+        sub_domain: std::env::var("SUB_DOMAIN").unwrap_or("".to_string())
+    })
+}
+
 async fn run_migrations(rocket: Rocket<Build>) -> fairing::Result {
     match Counts::fetch(&rocket) {
         Some(db) => match sqlx::migrate!().run(&**db).await {
@@ -226,6 +237,8 @@ pub fn sqlx_stage() -> AdHoc {
 
 #[launch]
 async fn rocket() -> _ {
+    dotenv().ok();
+
     let mut theme_manager = ThemeManager::new();
     theme_manager.load();
 
@@ -233,5 +246,6 @@ async fn rocket() -> _ {
         .attach(sqlx_stage())
         .manage(AppState { theme_manager })
         .mount("/", FileServer::from(relative!("static")))
-        .mount("/", routes![count, number])
+        .mount("/", routes![index, count, number])
+        .attach(Template::fairing())
 }

@@ -8,14 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#FFFFFF" />
 
-    <link rel="icon" type="image/x-icon" href="/rust-counter/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="{{ sub_domain }}/favicon.ico" />
 
     <meta property="og:title" content="Rust Counter!" />
     <meta property="og:site_name" content="Rust Counter" />
     <meta property="og:description" content="多种风格可选的萌萌计数器" />
 
-    <meta property="og:image" content="https://pi.hayper.xyz/rust-counter/count/index?theme=e621&format=png" />
-    <meta property="og:image:secure_url" content="https://pi.hayper.xyz/rust-counter/count/index?theme=e621&format=png" />
+    <meta property="og:image" content="{{ base_url }}{{ sub_domain }}/count/index?theme=e621&format=png" />
+    <meta property="og:image:secure_url" content="{{ base_url }}{{ sub_domain }}/count/index?theme=e621&format=png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:alt" content="Rust Count!" />
 
@@ -23,7 +23,7 @@
     <meta name="twitter:creator" content="@hayper1919" />
     <meta name="twitter:title" content="Rust Counter!">
     <meta name="twitter:description" content="多种风格可选的萌萌计数器">
-    <meta name="twitter:image" content="https://pi.hayper.xyz/rust-counter/count/index?theme=e621&format=png">
+    <meta name="twitter:image" content="{{ base_url }}{{ sub_domain }}/count/index?theme=e621&format=png">
     <meta name="twitter:image:alt" content="Rust Count!">
 
     <link rel="preconnect" href="//www.googletagmanager.com/" crossorigin />
@@ -32,7 +32,7 @@
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net/" />
 
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/water.css@2.1.1/out/water.min.css" />
-    <link rel="stylesheet" href="/rust-counter/style.css" />
+    <link rel="stylesheet" href="{{ sub_domain }}/style.css" />
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="//www.googletagmanager.com/gtag/js?id=G-2RLWN5JXRL"></script>
@@ -58,20 +58,20 @@
 <h3>How to use:</h3>
 
 <h5>SVG address</h5>
-<code>https://pi.hayper.xyz/rust-counter/count/:identifier</code>
+<code>{{ base_url }}{{ sub_domain }}/count/:identifier</code>
 
 <h5>Object tag</h5>
 <code>&lt;object type="image/svg+xml"
-    data="https://pi.hayper.xyz/rust-counter/count/:identifier"&gt;&lt;/object&gt;</code>
+    data="{{ base_url }}{{ sub_domain }}/count/:identifier"&gt;&lt;/object&gt;</code>
 
 <h5>Img tag</h5>
-<code>&lt;img src="https://pi.hayper.xyz/rust-counter/count/:identifier" /&gt;</code>
+<code>&lt;img src="{{ base_url }}{{ sub_domain }}/count/:identifier" /&gt;</code>
 
 <h5>Markdown</h5>
-<code>![:name](https://pi.hayper.xyz/rust-counter/count/:identifier)</code>
+<code>![:name]({{ base_url }}{{ sub_domain }}/count/:identifier)</code>
 
 <h3>eg:</h3>
-<object type="image/svg+xml" data="/rust-counter/count/index?theme=rule34" alt="Rust Count!"></object><br />
+<object type="image/svg+xml" data="{{ sub_domain }}/count/index?theme=rule34" alt="Rust Count!"></object><br />
 
 <i>
     Data can access by anyone, please
@@ -88,19 +88,19 @@
     <p1 style="margin: 0">
         <br>
         Just use the query parameters <code>theme</code>, like this:
-        <code>https://pi.hayper.xyz/rust-counter/count/:identifier?theme=rule34</code>
+        <code>{{ base_url }}{{ sub_domain }}/count/:identifier?theme=rule34</code>
     </p1>
 
     <h5>asoul</h5>
-    <object type="image/png" data="/rust-counter/number/1234567890?theme=asoul&format=png" alt="A-SOUL"></object>
+    <object type="image/png" data="{{ sub_domain }}/number/1234567890?theme=asoul&format=png" alt="A-SOUL"></object>
     <h5>moebooru</h5>
-    <object type="image/png" data="/rust-counter/number/1234567890?theme=moebooru&format=png" alt="Moebooru"></object>
+    <object type="image/png" data="{{ sub_domain }}/number/1234567890?theme=moebooru&format=png" alt="Moebooru"></object>
     <h5>rule34</h5>
-    <object type="image/svg+xml" data="/rust-counter/number/1234567890?theme=rule34" alt="Rule34"></object>
+    <object type="image/svg+xml" data="{{ sub_domain }}/number/1234567890?theme=rule34" alt="Rule34"></object>
     <h5>gelbooru</h5>
-    <object type="image/png" data="/rust-counter/number/1234567890?theme=gelbooru&format=png" alt="Gelbooru"></object>
+    <object type="image/png" data="{{ sub_domain }}/number/1234567890?theme=gelbooru&format=png" alt="Gelbooru"></object>
     <h5>e621</h5>
-    <object type="image/png" data="/rust-counter/number/1234567890?theme=e621&format=png" alt="e621"></object>
+    <object type="image/png" data="{{ sub_domain }}/number/1234567890?theme=e621&format=png" alt="e621"></object>
 
     <details>
         <summary>
@@ -108,10 +108,10 @@
         </summary>
 
         <h5>moebooru-h</h5>
-         <object type="image/svg+xml" data="/rust-counter/number/1234567890?theme=moebooru-h&format=png" alt="Moebooru-Hentai"></object>
+         <object type="image/svg+xml" data="{{ sub_domain }}/number/1234567890?theme=moebooru-h&format=png" alt="Moebooru-Hentai"></object>
 
         <h5>gelbooru-h</h5>
-         <object type="image/svg+xml" data="/rust-counter/number/1234567890?theme=gelbooru-h&format=png" alt="Gelbooru-Hentai"></object>
+         <object type="image/svg+xml" data="{{ sub_domain }}/number/1234567890?theme=gelbooru-h&format=png" alt="Gelbooru-Hentai"></object>
     </details>
 </details>
 
@@ -148,7 +148,7 @@
 
 <h3>Tool</h3>
 <div class="tool">
-    <code>https://pi.hayper.xyz/rust-counter/count/</code>
+    <code>{{ base_url }}{{ sub_domain }}/count/</code>
     <input id="name" type="text" placeholder=":identifier" style="display: inline-block; width: 80px; height: 1.6em; line-height: 1.6em; font-size: 14px; margin: 0 4px; padding: 0 4px; vertical-align: middle;">
     <code>?theme=</code>
     <select id="theme" style="display: inline-block; height: 1.6em; line-height: 1.6em; font-size: 14px; margin: 0 4px; padding: 0 4px; vertical-align: middle;">
@@ -200,7 +200,7 @@
         }
 
         object.setAttribute("type", `image/${format === "png" ? "png" : "svg+xml"}`);
-        object.setAttribute("data", encodeURI(`https://pi.hayper.xyz/rust-counter/count/${name}?theme=${theme}&pixelated=${pixelated}&format=${format}`));
+        object.setAttribute("data", encodeURI(`{{ base_url | safe }}{{ sub_domain }}/count/${name}?theme=${theme}&pixelated=${pixelated}&format=${format}`));
     });
 </script>
 </body>
