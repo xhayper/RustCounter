@@ -57,6 +57,12 @@ $ cargo run --release
 
 ### Configuration
 
+`.env`
+```
+DATABASE_URL="sqlite://database.sqlite"
+BASE_URL="http://127.0.0.1:8000/"
+```
+
 `Rocket.toml`
 
 ```toml
