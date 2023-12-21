@@ -200,7 +200,7 @@ async fn count(
     .await
     .ok();
 
-    respond_with_dynamic_format(app_state, format.unwrap_or("svg"), options, true)
+    respond_with_dynamic_format(app_state, format.unwrap_or("svg"), options, false)
 }
 
 async fn run_migrations(rocket: Rocket<Build>) -> fairing::Result {
