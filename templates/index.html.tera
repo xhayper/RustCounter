@@ -200,7 +200,7 @@
         }
 
         object.setAttribute("type", `image/${format === "png" ? "png" : "svg+xml"}`);
-        object.setAttribute("data", encodeURI(`{{ base_url | safe }}/count/${name}?theme=${theme}&pixelated=${pixelated}&format=${format}`));
+        object.setAttribute("data", encodeURI(`{{ base_url | safe }}count/${name}?theme=${theme}&pixelated=${pixelated}&format=${format}`));
     });
 </script>
 </body>
