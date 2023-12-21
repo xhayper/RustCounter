@@ -161,7 +161,6 @@ impl ThemeManager<'_> {
 
         let mut image_parts = String::new();
 
-        // add padding according to options.count.to_string().chars().max(options.length)
         let mut padded = String::new();
         for _ in 0..((options.count.to_string().len() as u8).max(options.length)
             - options.count.to_string().len() as u8)
