@@ -209,8 +209,7 @@ async fn count(
 #[get("/")]
 fn index() -> Template {
     Template::render("index", context! {
-        base_url: std::env::var("BASE_URL").unwrap_or("http://127.0.0.1:8000/".to_string()),
-        sub_domain: std::env::var("SUB_DOMAIN").unwrap_or("".to_string())
+        base_url: std::env::var("BASE_URL").unwrap_or("http://127.0.0.1:8000/".to_string())
     })
 }
 
