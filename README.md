@@ -57,7 +57,7 @@ $ cargo run --release
 
 ### Configuration
 
-`Rocket.motl`
+`Rocket.toml`
 
 ```toml
 [default.databases.sqlite_counts]
