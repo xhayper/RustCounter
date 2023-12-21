@@ -2,7 +2,7 @@
 
 多种风格可选的萌萌计数器
 
-![RustCounter](https://pi.hayper.xyz/rust-counter/count/RustCounter.githubformat=png)
+![RustCounter](https://pi.hayper.xyz/rust-counter/count/RustCounter.github?format=png)
 
 <details>
 <summary>More theme</summary>
