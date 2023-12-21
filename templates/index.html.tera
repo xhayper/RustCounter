@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#FFFFFF" />
 
-    <link rel="icon" type="image/x-icon" href="{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/favicon.ico" />
 
     <meta property="og:title" content="Rust Counter!" />
     <meta property="og:site_name" content="Rust Counter" />
@@ -32,7 +32,7 @@
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net/" />
 
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/water.css@2.1.1/out/water.min.css" />
-    <link rel="stylesheet" href="{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/style.css" />
+    <link rel="stylesheet" href="/{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/style.css" />
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="//www.googletagmanager.com/gtag/js?id=G-2RLWN5JXRL"></script>
@@ -71,7 +71,7 @@
 <code>![:name]({{ base_url }}count/:identifier)</code>
 
 <h3>eg:</h3>
-<object type="image/svg+xml" data="{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/count/index?theme=rule34" alt="Rust Count!"></object><br />
+<object type="image/svg+xml" data="/{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/count/index?theme=rule34" alt="Rust Count!"></object><br />
 
 <i>
     Data can access by anyone, please
@@ -92,15 +92,15 @@
     </p1>
 
     <h5>asoul</h5>
-    <object type="image/png" data="{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=asoul&format=png" alt="A-SOUL"></object>
+    <object type="image/png" data="/{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=asoul&format=png" alt="A-SOUL"></object>
     <h5>moebooru</h5>
-    <object type="image/png" data="{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=moebooru&format=png" alt="Moebooru"></object>
+    <object type="image/png" data="/{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=moebooru&format=png" alt="Moebooru"></object>
     <h5>rule34</h5>
-    <object type="image/svg+xml" data="{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=rule34" alt="Rule34"></object>
+    <object type="image/svg+xml" data="/{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=rule34" alt="Rule34"></object>
     <h5>gelbooru</h5>
-    <object type="image/png" data="{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=gelbooru&format=png" alt="Gelbooru"></object>
+    <object type="image/png" data="/{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=gelbooru&format=png" alt="Gelbooru"></object>
     <h5>e621</h5>
-    <object type="image/png" data="{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=e621&format=png" alt="e621"></object>
+    <object type="image/png" data="/{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=e621&format=png" alt="e621"></object>
 
     <details>
         <summary>
@@ -108,10 +108,10 @@
         </summary>
 
         <h5>moebooru-h</h5>
-         <object type="image/svg+xml" data="{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=moebooru-h&format=png" alt="Moebooru-Hentai"></object>
+         <object type="image/svg+xml" data="/{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=moebooru-h&format=png" alt="Moebooru-Hentai"></object>
 
         <h5>gelbooru-h</h5>
-         <object type="image/svg+xml" data="{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=gelbooru-h&format=png" alt="Gelbooru-Hentai"></object>
+         <object type="image/svg+xml" data="/{{ base_url | split(pat="/") | slice(start=3) | join(sep="/") }}/number/1234567890?theme=gelbooru-h&format=png" alt="Gelbooru-Hentai"></object>
     </details>
 </details>
 
